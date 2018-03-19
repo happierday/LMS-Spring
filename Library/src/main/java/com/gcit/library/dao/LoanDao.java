@@ -34,8 +34,8 @@ public class LoanDao extends BaseDao<Loan> implements ResultSetExtractor<List<Lo
 			loan.setBranchId(rs.getInt(2));
 			loan.setCardNo(rs.getInt(3));
 			loan.setBookTitle(rs.getString(4));
-			loan.setBorrowerName(rs.getString(6));
-			loan.setBranchName(rs.getString(5));
+			loan.setBorrowerName(rs.getString(5));
+			loan.setBranchName(rs.getString(6));
 			loan.setDateOut(rs.getDate(7).toLocalDate());
 			loan.setDueDate(rs.getDate(8).toLocalDate());
 			if(rs.getDate(9) != null) {
@@ -44,5 +44,17 @@ public class LoanDao extends BaseDao<Loan> implements ResultSetExtractor<List<Lo
 			loans.add(loan);
 		}
 		return loans;
+	}
+
+	public Integer getLoansCount(String sql, Object[] values) {
+		return mysqlTemplate.queryForObject(sql,values,Integer.class);
+	}
+
+	public void updateLoan(String sql, Object[] values) {
+		mysqlTemplate.update(sql,values);
+	}
+
+	public void deleteLoan(String sql, Object[] values) {
+		mysqlTemplate.update(sql,values);
 	}
 }
