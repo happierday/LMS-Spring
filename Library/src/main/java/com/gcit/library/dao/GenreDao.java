@@ -6,9 +6,11 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.springframework.jdbc.core.ResultSetExtractor;
+import org.springframework.stereotype.Component;
 
 import com.gcit.library.model.Genre;
 
+@Component
 public class GenreDao extends BaseDao<Genre> implements ResultSetExtractor<List<Genre>>{
 
 	public List<Genre> getGenreForBook(Integer bookId) {

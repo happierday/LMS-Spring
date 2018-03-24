@@ -6,20 +6,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.jdbc.core.ResultSetExtractor;
+import org.springframework.stereotype.Component;
 
 import com.gcit.library.model.Book;
 import com.gcit.library.model.Branch;
 import com.gcit.library.model.Loan;
 
+@Component
 public class LoanDao extends BaseDao<Loan> implements ResultSetExtractor<List<Loan>>{
-
-	public List<Loan> getLoanForBook(Integer bookId){
-		return mysqlTemplate.query("select book.bookId, branch.branchId, borrower.cardNo,book.title, borrower.name,branch.branchName,loan.dateOut,loan.dueDate,loan.dateIn from tbl_book book\n" + 
-				"join tbl_book_loans loan on book.bookId = loan.bookId\n" + 
-				"join tbl_library_branch branch on loan.branchId = branch.branchId\n" + 
-				"join tbl_borrower borrower on loan.cardNo = borrower.cardNo\n" + 
-				"where loan.dateIn is null and book.bookId = ?;", new Object[] {bookId}, this);
-	}
 	
 	public List<Loan> getLoans(String sql, Object[]values){
 		return mysqlTemplate.query(sql, values,this);

@@ -1,13 +1,15 @@
 package com.gcit.library.service;
 
-import java.sql.SQLException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.gcit.library.dao.PublisherDao;
@@ -22,15 +24,33 @@ public class PublisherService {
 	PublisherDao pdao;
 	
 	@Transactional
-	@RequestMapping(value="getPublishers",method=RequestMethod.GET)
-	public List<Publisher> getAllPublishers(Integer pageNo) throws SQLException{
+	@RequestMapping(value="/publishers",method=RequestMethod.GET)
+	public ResponseEntity<Object> getAllPublishers(@RequestParam(value="pageNo",required=false)Integer pageNo,
+			@RequestParam(value="search",required=false) String search){
 		StringBuffer str = new StringBuffer("select * from tbl_publisher");
-		if(pageNo != null) {
-			str.append(" limit ?,?");
-			return pdao.getAllPublishers(str.toString(),new Object[] {(pageNo-1)*10,10});
+		List<Publisher> pubs = null;
+		try {
+			if(pageNo != null && search != null) {
+				String query = "%" + search + "%";
+				str.append(" where publisherName = ? limit ?,?;");
+				pubs = pdao.getPublishers(str.toString(), new Object[] {query,(pageNo-1)*10,10});
+			} else {
+				if(search != null) {
+					String query = "%" + search + "%";
+					str.append(" where publisherName = ?;");
+					pubs = pdao.getPublishers(str.toString(), new Object[] {query});
+				}else if(pageNo != null) {
+					str.append(" limit ?,?;");
+					pubs = pdao.getPublishers(str.toString(), new Object[] {(pageNo-1)*10,10});
+				} else {
+					pubs = pdao.getPublishers(str.toString(), null);
+				}
+			}
+			return new ResponseEntity<Object>(pubs,HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<Object>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-
-		return pdao.getAllPublishers(str.toString(),null);
 	}
 	
 //	public Publisher getPublisherByPK(Integer publisherId) throws SQLException {

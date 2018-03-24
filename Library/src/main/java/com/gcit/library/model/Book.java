@@ -16,6 +16,13 @@ public class Book {
 	private List<Branch> branches;
 	private List<Genre> genres;
 	private Publisher publisher;
+	private Integer copies;
+	public Integer getCopies() {
+		return copies;
+	}
+	public void setCopies(Integer copies) {
+		this.copies = copies;
+	}
 	public Integer getId() {
 		return id;
 	}

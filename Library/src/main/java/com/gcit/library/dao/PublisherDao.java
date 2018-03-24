@@ -6,18 +6,14 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.springframework.jdbc.core.ResultSetExtractor;
+import org.springframework.stereotype.Component;
 
 import com.gcit.library.model.Publisher;
 
+@Component
 public class PublisherDao extends BaseDao<Publisher> implements ResultSetExtractor<List<Publisher>>{
 	
-	public List<Publisher> getPublisherForBook(Integer bookId) {
-		return mysqlTemplate.query("select * from tbl_publisher publisher\n" + 
-				"join tbl_book book on publisher.publisherId = book.pubId\n" + 
-				"where book.bookId = ?", new Object[] {bookId},this);
-	}
-
-	public List<Publisher> getAllPublishers(String sql, Object[]values) {
+	public List<Publisher> getPublishers(String sql, Object[]values) {
 		return mysqlTemplate.query(sql,values,this);
 	}
 	
