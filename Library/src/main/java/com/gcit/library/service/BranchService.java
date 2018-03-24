@@ -32,7 +32,7 @@ public class BranchService {
 	BookDao bdao;
 	
 	@Transactional
-	@RequestMapping(value="/branches",method=RequestMethod.GET,produces="application/json")
+	@RequestMapping(value="/branches",method=RequestMethod.GET)
 	public ResponseEntity<Object> getAllBranch(@RequestParam(value="pageNo",required=false) Integer pageNo,
 			@RequestParam(value="search",required=false) String search){
 		StringBuffer str = new StringBuffer("select * from tbl_library_branch");
@@ -68,7 +68,7 @@ public class BranchService {
 	}
 	
 	@Transactional
-	@RequestMapping(value="/branches/{branchId}",method=RequestMethod.GET,produces="application/json")
+	@RequestMapping(value="/branches/{branchId}",method=RequestMethod.GET)
 	public ResponseEntity<Object> getBranchByPK(@PathVariable(value="branchId") Integer branchId){
 		StringBuffer str = new StringBuffer("select * from tbl_library_branch where branchId = ?");
 		try {
@@ -88,7 +88,7 @@ public class BranchService {
 	}
 	
 	@Transactional
-	@RequestMapping(value="/branches/{branchId}",method=RequestMethod.PUT,consumes="application/json",produces="application/json")
+	@RequestMapping(value="/branches/{branchId}",method=RequestMethod.PUT)
 	public ResponseEntity<Object> updateBranch(@RequestBody Branch branch, @PathVariable(value="branchId") Integer branchId){
 		try {
 			brdao.updateBranch(branch);
@@ -102,7 +102,7 @@ public class BranchService {
 	}
 	
 	@Transactional
-	@RequestMapping(value="/branches/{branchId}",method=RequestMethod.DELETE,produces="application/json")
+	@RequestMapping(value="/branches/{branchId}",method=RequestMethod.DELETE)
 	public ResponseEntity<Object> deleteBranch(@PathVariable(value="branchId") Integer branchId){
 		try {
 			brdao.deleteBranchByPK(branchId);
@@ -114,7 +114,7 @@ public class BranchService {
 	}
 	
 	@Transactional
-	@RequestMapping(value="/branches",method=RequestMethod.POST, consumes= {"application/json"},produces= {"application/json"})
+	@RequestMapping(value="/branches",method=RequestMethod.POST)
 	public ResponseEntity<Object> addBranch(@RequestBody Branch branch){
 		try {
 			Integer branchId = brdao.addBranchGetPK(branch);

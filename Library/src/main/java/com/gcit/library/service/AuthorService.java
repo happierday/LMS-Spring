@@ -24,8 +24,6 @@ import com.gcit.library.model.Author;
 @CrossOrigin(origins = "http://localhost:3000")
 public class AuthorService {
 	
-	private String url = "http://localhost:8080";
-	
 	@Autowired
 	AuthorDao adao;
 	
@@ -74,12 +72,12 @@ public class AuthorService {
 	}
 	
 	@Transactional
-	@RequestMapping(value="/authors/{authorId}",method=RequestMethod.PUT, consumes= {"application/json"},produces= {"application/json"})
+	@RequestMapping(value="/authors/{authorId}",method=RequestMethod.PUT)
 	public ResponseEntity<Object> updateAuthor(@RequestBody Author author, @PathVariable(value="authorId") Integer authorId){
 		try {
 			adao.updateAuthor(author);
 			HttpHeaders headers = new HttpHeaders();
-			headers.setLocation(URI.create(url+"/authors/"+authorId));
+			headers.setLocation(URI.create("/authors/"+authorId));
 			return new ResponseEntity<Object>(headers,HttpStatus.OK);
 		}catch(Exception e) {
 			e.printStackTrace();
@@ -108,14 +106,14 @@ public class AuthorService {
 	}
 	
 	@Transactional
-	@RequestMapping(value="/authors",method=RequestMethod.POST, consumes= {"application/json"},produces= {"application/json"})
+	@RequestMapping(value="/authors",method=RequestMethod.POST)
 	public ResponseEntity<Object> addAuthor(@RequestBody Author author){
 		try {
 			Integer authorId = adao.addAuthorGetPK(author);
 			author.setId(authorId);
 			adao.insertAuthor(author);
 			HttpHeaders headers = new HttpHeaders();
-			headers.setLocation(URI.create(url+"/authors/"+authorId));
+			headers.setLocation(URI.create("/authors/"+authorId));
 			return new ResponseEntity<Object>(headers,HttpStatus.CREATED);
 		} catch(Exception e) {
 			return new ResponseEntity<Object>(HttpStatus.INTERNAL_SERVER_ERROR);

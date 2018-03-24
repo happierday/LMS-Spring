@@ -31,7 +31,7 @@ public class LoanService {
 	LoanDao ldao;
 	
 	@Transactional
-	@RequestMapping(value="/loans", method=RequestMethod.GET, produces= {"application/json"})
+	@RequestMapping(value="/loans", method=RequestMethod.GET)
 	public ResponseEntity<Object> getLoans(@RequestParam(value="pageNo",required=false) Integer pageNo,
 			@RequestParam(value="searchTitle",required=false) String searchTitle) {
 		List<Loan> loans = null;
@@ -60,7 +60,7 @@ public class LoanService {
 	}
 	
 	@Transactional
-	@RequestMapping(value="/loans/count",method=RequestMethod.GET,produces= {"application/json"})
+	@RequestMapping(value="/loans/count",method=RequestMethod.GET)
 	public ResponseEntity<Object> getLoansCount(@RequestParam(value="searchTitle",required=false)  String searchTitle)  {
 		StringBuffer str = new StringBuffer("select count(*) from tbl_book book\n" + 
 				"join tbl_book_loans loan on book.bookId = loan.bookId\n" + 
@@ -84,7 +84,7 @@ public class LoanService {
 	}
 	
 	@Transactional
-	@RequestMapping(value="/loans",method=RequestMethod.PUT, consumes= {"application/json"},produces= {"application/json"})
+	@RequestMapping(value="/loans",method=RequestMethod.PUT)
 	public ResponseEntity<Object> updateLoan(@RequestBody Loan loan)  {
 		StringBuffer str = new StringBuffer("update tbl_book_loans set dueDate = ? where bookId = ? and branchId = ? and cardNo = ?");
 		try {
@@ -97,7 +97,7 @@ public class LoanService {
 	}
 	
 	@Transactional
-	@RequestMapping(value="/loans",method=RequestMethod.DELETE, consumes= {"application/json"},produces= {"application/json"})
+	@RequestMapping(value="/loans",method=RequestMethod.DELETE)
 	public ResponseEntity<Object> deleteLoan(@RequestBody Loan loan)  {
 		StringBuffer str = new StringBuffer("delete from tbl_book_loans where bookId = ? and branchId = ? and cardNo = ?");
 		try {

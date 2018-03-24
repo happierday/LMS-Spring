@@ -87,11 +87,12 @@ public class BookDao extends BaseDao<Book> implements ResultSetExtractor<List<Bo
 	public List<Book> extractData(ResultSet rs) throws SQLException {
 		List<Book> books = new ArrayList<Book>();
 		Book book = null;
+		int colSize = rs.getMetaData().getColumnCount();
 		while(rs.next()) {
 			book = new Book();
 			book.setId(rs.getInt(1));
 			book.setTitle(rs.getString(2));
-			if(rs.getObject(3) != null) {
+			if(colSize == 3) {
 				book.setCopies(rs.getInt(3));
 			}
 			books.add(book);

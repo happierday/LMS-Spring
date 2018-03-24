@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -30,8 +31,6 @@ import com.gcit.library.model.Loan;
 @RestController
 public class BookService{
 	
-	private String url = "http://localhost:8080";
-	
 	@Autowired
 	BookDao bdao;
 
@@ -49,7 +48,7 @@ public class BookService{
 	
 	@Autowired
 	LoanDao ldao;
-
+	
 	@Transactional
 	@RequestMapping(value="/books",method=RequestMethod.GET)
 	public ResponseEntity<Object> getBooks(@RequestParam(value="pageNo",required=false) Integer pageNo,
@@ -113,12 +112,12 @@ public class BookService{
 			book.setPublisher(pdao.getPublishers("select pub.publisherId,pub.publisherName,pub.publisherAddress,pub.publisherPhone from tbl_publisher pub\n" + 
 						"join tbl_book book on book.pubId = pub.publisherId\n" + 
 						"where book.bookId = ?;", new Object[] {book.getId()}).get(0));
-			return new ResponseEntity<Object>(books,HttpStatus.OK);
+			return new ResponseEntity<Object>(book,HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<Object>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-
+	
 	@Transactional
 	@RequestMapping(value="/books/count",method=RequestMethod.GET)
 	public ResponseEntity<Object> getBookCount(@RequestParam(value="search",required=false)  String search)  {
@@ -139,11 +138,11 @@ public class BookService{
 	}
 
 	@Transactional
-	@RequestMapping(value="/books/{bookId}",method=RequestMethod.PUT, consumes = {"application/json"},produces= {"application/json"})
+	@RequestMapping(value="/books/{bookId}",method=RequestMethod.PUT)
 	public ResponseEntity<Object> updateBook(@RequestBody Book book, @PathVariable(value="bookId") Integer bookId)  {
 		try{
 			bdao.updateBook(book);
-			URI location = URI.create(url+"/books/"+bookId);
+			URI location = URI.create("/books/"+bookId);
 			HttpHeaders headers = new HttpHeaders();
 			headers.setLocation(location);
 			return new ResponseEntity<Object>(headers,HttpStatus.NO_CONTENT);
@@ -162,7 +161,7 @@ public class BookService{
 	}
 
 	@Transactional
-	@RequestMapping(value="/books/{bookId}", method=RequestMethod.DELETE,produces= {"application/json"})
+	@RequestMapping(value="/books/{bookId}", method=RequestMethod.DELETE)
 	public ResponseEntity<Object> deleteBookByPK(@PathVariable("bookId") Integer bookId)  {
 		try {
 			List<Loan> loans = isReturned(bookId);
@@ -179,14 +178,14 @@ public class BookService{
 
 	
 	@Transactional
-	@RequestMapping(value="/books", method=RequestMethod.POST,consumes= {"application/json"},produces= {"application/json"})
+	@RequestMapping(value="/books", method=RequestMethod.POST)
 	public ResponseEntity<Object> addBook(@RequestBody Book book)  {
 		try {
 			Integer pk = bdao.addBookGetPK(book);
 			book.setId(pk);
 			bdao.insertBook(book);
 			HttpHeaders headers = new HttpHeaders();
-			headers.setLocation(URI.create(url+"/books/"+pk));
+			headers.setLocation(URI.create("/books/"+pk));
 			return new ResponseEntity<Object>(headers,HttpStatus.CREATED);
 		} catch(Exception e) {
 			return new ResponseEntity<Object>(HttpStatus.INTERNAL_SERVER_ERROR);
