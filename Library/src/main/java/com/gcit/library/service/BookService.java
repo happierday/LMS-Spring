@@ -87,6 +87,7 @@ public class BookService{
 			}
 			return new ResponseEntity<Object>(books,HttpStatus.OK);
 		} catch(Exception e) {
+			e.printStackTrace();
 			return new ResponseEntity<Object>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
